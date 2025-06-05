@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Film Öneri Sistemi</title>
+    <!-- ... head kısmı aynı kalabilir, sadece style içinde aşağıyı güncelle -->
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar {
+        background-color: #343a40;
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar a {
+        color: white;
+        margin-left: 20px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .navbar a:hover {
+        text-decoration: underline;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 80px auto 40px;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    form {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    input[type="text"], select {
+        padding: 10px;
+        width: 250px;
+        margin: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    input[type="submit"] {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .film-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        background-color: #fafafa;
+    }
+
+    .film-details {
+        flex: 1;
+    }
+
+    .film-poster img {
+        width: 150px;
+        border-radius: 8px;
+    }
+
+    .film-card form {
+        margin-top: 10px;
+    }
+
+    .clear {
+        clear: both;
+    }
+</style>
+
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            🎬 <strong>Film Öneri Sistemi</strong>
+        </div>
+        <div class="nav-right">
+            <a href="/">🏠 Ana Sayfa</a>
+            <a href="/favorites">⭐ Favoriler</a>
+            <a href="/compare">📊 Karşılaştır</a>
+            <a href="/logout">🚪 Çıkış Yap</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <form method="POST">
+            <input type="text" name="movie" id="movie-input" list="movie-suggestions"
+                   placeholder="Film adı girin" value="{{ movie }}" required autocomplete="off">
+
+            <datalist id="movie-suggestions"></datalist>
+
+            <select name="filter">
+                <option value="hybrid" {% if selected_filter == 'hybrid' %}selected{% endif %}>Hibrit</option>
+                <option value="cb" {% if selected_filter == 'cb' %}selected{% endif %}>İçerik Tabanlı</option>
+                <option value="cf" {% if selected_filter == 'cf' %}selected{% endif %}>İşbirlikçi</option>
+            </select>
+            <input type="submit" value="🎯 Öner">
+        </form>
+
+{% for film in recommendations %}
+    <div class="film-card">
+        <div class="film-details">
+            <h2>{{ film.title }}</h2>
+            <p><strong>Benzerlik:</strong> %{{ film.similarity }}</p>
+            <p><strong>IMDb:</strong> {{ film.rating }}/10</p>
+            <p><strong>Tür:</strong> {{ film.genres }}</p>
+            <p><strong>Süre:</strong> {{ film.runtime }}</p>
+            <p>{{ film.overview }}</p>
+
+            {% if not film.is_favorite %}
+                <form action="/favorite" method="POST">
+                    <input type="hidden" name="title" value="{{ film.title }}">
+                    <input type="hidden" name="movie" value="{{ movie }}">
+                    <input type="hidden" name="filter" value="{{ selected_filter }}">
+                    <input type="submit" value="☆ Favoriye Ekle">
+                </form>
+            {% else %}
+                <form action="/unfavorite" method="POST">
+                    <input type="hidden" name="title" value="{{ film.title }}">
+                    <input type="hidden" name="movie" value="{{ movie }}">
+                    <input type="hidden" name="filter" value="{{ selected_filter }}">
+                    <input type="submit" value="🗑 Favoriden Çıkar" style="color: red;">
+                </form>
+            {% endif %}
+        </div>
+
+        {% if film.poster %}
+        <div class="film-poster">
+            <img src="{{ film.poster }}" alt="Poster">
+        </div>
+        {% endif %}
+    </div>
+{% endfor %}
+
+    </div>
+
+    <!-- Autocomplete Script -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $("#movie-input").on("input", function () {
+            var query = $(this).val();
+            if (query.length > 0) {
+                $.getJSON("/autocomplete?q=" + query, function (data) {
+                    let datalist = $("#movie-suggestions");
+                    datalist.empty();
+                    data.forEach(function (item) {
+                        datalist.append(`<option value="${item}">`);
+                    });
+                });
+            }
+        });
+    });
+    </script>
+</body>
+</html>

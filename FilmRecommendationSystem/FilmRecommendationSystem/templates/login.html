@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Giriş Yap</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input[type="text"], input[type="submit"] {
+            padding: 10px;
+            width: 200px;
+            margin-top: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>🎬 Film Öneri Sistemine Giriş</h2>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Kullanıcı adı girin" required>
+            <br>
+            <input type="submit" value="Giriş Yap">
+        </form>
+    </div>
+</body>
+</html>

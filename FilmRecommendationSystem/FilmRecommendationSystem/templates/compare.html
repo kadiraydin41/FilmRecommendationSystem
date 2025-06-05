@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Model Karşılaştırma</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 900px;
+            margin: 80px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h1, h3 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            🎬 <strong>Film Öneri Sistemi</strong>
+        </div>
+        <div class="nav-right">
+            <a href="/">🏠 Ana Sayfa</a>
+            <a href="/favorites">⭐ Favoriler</a>
+            <a href="/compare">📊 Karşılaştır</a>
+            <a href="/logout">🚪 Çıkış Yap</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>📊 Model Karşılaştırması</h1>
+
+        <h3>⏱️ Tahmini Süre (ms)</h3>
+        <div style="max-width: 600px;">
+            <canvas id="timeChart"></canvas>
+        </div>
+
+        <h3>🎯 Ortalama Benzerlik Puanı (%)</h3>
+        <div style="max-width: 600px;">
+            <canvas id="simChart"></canvas>
+        </div>
+
+        <h3>⚖️ Avantaj / Dezavantaj</h3>
+        <ul>
+            <li><strong>Content-Based:</strong> Hızlı ve açıklanabilir ama kişiselleştirme zayıf</li>
+            <li><strong>Collaborative:</strong> Kişiselleştirme yüksek ama yeni film için öneremez</li>
+            <li><strong>Hybrid:</strong> En dengeli model ama daha yavaş</li>
+        </ul>
+    </div>
+
+    <script>
+        const modelLabels = {{ models | tojson }};
+        const times = {{ times | tojson }};
+        const similarities = {{ similarities | tojson }};
+
+        new Chart(document.getElementById("timeChart"), {
+            type: "bar",
+            data: {
+                labels: modelLabels,
+                datasets: [{
+                    label: "Süre (ms)",
+                    data: times,
+                    backgroundColor: "#3498db"
+                }]
+            }
+        });
+
+        new Chart(document.getElementById("simChart"), {
+            type: "bar",
+            data: {
+                labels: modelLabels,
+                datasets: [{
+                    label: "Benzerlik Ortalaması (%)",
+                    data: similarities,
+                    backgroundColor: "#2ecc71"
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

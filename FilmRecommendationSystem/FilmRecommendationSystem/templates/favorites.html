@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Favori Filmlerim</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .film-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fafafa;
+            margin-bottom: 20px;
+        }
+
+        .film-details {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .film-poster img {
+            width: 150px;
+            border-radius: 8px;
+        }
+
+        .film-card form {
+            margin-top: 15px;
+        }
+
+        .film-card input[type="submit"] {
+            padding: 6px 12px;
+            background-color: #fff;
+            color: red;
+            border: 1px solid red;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .film-card input[type="submit"]:hover {
+            background-color: #ffe6e6;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-left">
+        🎬 <strong>Film Öneri Sistemi</strong>
+    </div>
+    <div class="nav-right">
+        <a href="/">🏠 Ana Sayfa</a>
+        <a href="/favorites">⭐ Favoriler</a>
+        <a href="/compare">📊 Karşılaştır</a>
+        <a href="/logout">🚪 Çıkış Yap</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>⭐ Favori Filmlerim</h2>
+
+    {% if recommendations %}
+        {% for film in recommendations %}
+            <div class="film-card">
+                <div class="film-details">
+                    <h3>{{ film.title }}</h3>
+                    <p><strong>IMDb:</strong> {{ film.rating }}/10</p>
+                    <p><strong>Tür:</strong> {{ film.genres }}</p>
+                    <p><strong>Süre:</strong> {{ film.runtime }}</p>
+                    <p>{{ film.overview }}</p>
+
+                    <form action="/unfavorite" method="POST">
+                        <input type="hidden" name="title" value="{{ film.title }}">
+                        <input type="hidden" name="movie" value="">
+                        <input type="hidden" name="filter" value="hybrid">
+                        <input type="submit" value="🗑 Favoriden Çıkar">
+                    </form>
+                </div>
+                {% if film.poster %}
+                    <div class="film-poster">
+                        <img src="{{ film.poster }}">
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align:center;">Henüz favori film eklenmemiş.</p>
+    {% endif %}
+</div>
+</body>
+</html>
